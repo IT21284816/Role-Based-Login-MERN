@@ -13,18 +13,25 @@ function Login() {
   const handleChange = e => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-
   const handleSubmit = async e => {
     e.preventDefault();
     try {
       const res = await axios.post('http://localhost:5000/api/login', form);
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('role', res.data.role); // store the role
-      navigate('/dashboard');
+      const { token, role } = res.data;
+  
+      localStorage.setItem('token', token);
+      localStorage.setItem('role', role);
+  
+      if (role === 'admin') {
+        navigate('/admin-dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed');
     }
   };
+  
   
 
   return (
